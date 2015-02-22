@@ -1,14 +1,16 @@
 # -*- coding: utf-8 -*-
-#"""
-#Compiled, mashed and generally mutilated 2014-2015 by Denis Pleic
+
+#Compiled, mashed and generally mutilated 2014-2015 by Joao Silva
 #Made available under GNU GENERAL PUBLIC LICENSE
 
 # Modified Python I2C library for Raspberry Pi
 # as found on http://www.recantha.co.uk/blog/?p=4849
 # Joined existing 'i2c_lib.py' and 'lcddriver.py' into a single library
-# added bits and pieces from various sources
-# By DenisFromHR (Denis Pleic)
-# 2015-02-10, ver 0.1
+# added bits and pieces from various sources, 
+# original souce downloaded from Denis Pleic on 2015-02-2015
+# By JMS (Joao Silva)
+# added function to print on lcd to diferent ways
+# 22-02-2015
 
 #"""
 #
@@ -152,7 +154,35 @@ class lcd:
  
       for char in string:
          self.lcd_write(ord(char), Rs)
- 
+   #just works for 1 "\n" to work with more uncomment the following lines
+   def lcd_put_new_line(self,string):
+      string = string.split()
+      self.lcd_display_string(string[0],1)
+      self.lcd_display_string(string[1],2)
+      #self.lcd_display_string(string[2],3)
+      #self.lcd_display_string(string[3],4)
+
+   # pint a string on the center of the LCD
+   def print_on_center(self,string,line):     
+      n = 0 #indicates where inserte the next ' '
+      while (len(string) < 16):
+         if n == 0:
+            n = 1
+            string = " " + string
+         else:
+            n = 0
+            string = string + " "
+
+      self.lcd_display_string(string,line)
+
+   #just works for 1 "\n" to work with more uncomment the following lines
+   def lcd_put_new_line_center(self,string):
+      string = string.split()
+      self.print_on_center(string[0],1)
+      self.print_on_center(string[1],2)
+      #self.print_on_center(string[2],3)
+      #self.print_on_center(string[3],4)
+
    # clear lcd and set to home
    def lcd_clear(self):
       self.lcd_write(LCD_CLEARDISPLAY)
