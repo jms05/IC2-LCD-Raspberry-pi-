@@ -162,6 +162,59 @@ class lcd:
       #self.lcd_display_string(string[2],3)
       #self.lcd_display_string(string[3],4)
 
+   #just works for 1 "\n" to work with more uncomment the following lines
+   def lcd_anime_left_right(self,string,wline,delay,rept):
+      aux = "                "
+      oriSize = len(string) + 1 + 16 #16 is the lcd line size
+      j = 0
+      while j < rept:
+         i = 0
+         string_aux = aux + string
+         while i < oriSize:
+            self.lcd_display_string(string_aux,wline)
+            string_aux  = string_aux[1:]
+            string_aux = string_aux + " "
+            i = i + 1
+            if i < (oriSize - 1):
+               sleep(delay)
+         j = j + 1
+
+
+   def lcd_str_dance(self,string,wline,delay,rept):
+      strSize = len(string)
+      if strSize <= 16: # strings greater than 16 chars not allowed (lcd line size)
+         aux = ""
+
+         while (len(aux) + strSize) < 16:
+            aux = aux + " "
+         j = 0 #contol the number of loops 
+         auxSize = len(aux)
+
+         while j < rept:
+            i = 0
+            string_aux = aux + string
+            while i < auxSize :
+               self.lcd_display_string(string_aux,wline)
+               string_aux  = string_aux[1:]
+               string_aux = string_aux + " "
+               i = i + 1
+               sleep(delay)
+            i = 0
+            while i < auxSize :
+               self.lcd_display_string(string_aux,wline)
+               string_aux  = string_aux[:-1]
+               string_aux = " " + string_aux
+               i = i + 1
+               sleep(delay)
+            j = j + 1
+         # this final loop makes string go way progressively
+         while (i<16):
+            string_aux = " " + string_aux
+            self.lcd_display_string(string_aux,wline)
+            i = i + 1
+            sleep(delay)
+
+
    # pint a string on the center of the LCD
    def print_on_center(self,string,line):     
       n = 0 #indicates where inserte the next ' '
