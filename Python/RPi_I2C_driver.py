@@ -162,16 +162,15 @@ class lcd:
       #self.lcd_display_string(string[2],3)
       #self.lcd_display_string(string[3],4)
 
-   #just works for 1 "\n" to work with more uncomment the following lines
-   def lcd_anime_left_right(self,string,wline,delay,rept):
+   def anime_left_right(self,string,linha,delay,rept):
       aux = "                "
-      oriSize = len(string) + 1 + 16 #16 is the lcd line size
+      oriSize = len(string) + 17
       j = 0
       while j < rept:
          i = 0
          string_aux = aux + string
          while i < oriSize:
-            self.lcd_display_string(string_aux,wline)
+            self.lcd_display_string(string_aux,linha)
             string_aux  = string_aux[1:]
             string_aux = string_aux + " "
             i = i + 1
@@ -213,7 +212,6 @@ class lcd:
             self.lcd_display_string(string_aux,wline)
             i = i + 1
             sleep(delay)
-
 
    # pint a string on the center of the LCD
    def print_on_center(self,string,line):     

@@ -1,0 +1,11 @@
+#!/bin/bash
+
+## COMANDO PRETENDIDO
+sudo killall python
+
+cd /
+cd /home/pi/lcd
+sudo python renicia.py
+cd /
+
+sudo reboot
