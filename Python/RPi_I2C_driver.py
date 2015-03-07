@@ -10,7 +10,7 @@
 # original souce downloaded from Denis Pleic on 2015-02-2015
 # By JMS (Joao Silva)
 # added function to print on lcd to diferent ways
-# 22-02-2015
+# 07-03-2015
 
 #"""
 #
@@ -156,7 +156,7 @@ class lcd:
          self.lcd_write(ord(char), Rs)
    #just works for 1 "\n" to work with more uncomment the following lines
    def lcd_put_new_line(self,string):
-      string = string.split()
+      string = string.split('\n')
       self.lcd_display_string(string[0],1)
       self.lcd_display_string(string[1],2)
       #self.lcd_display_string(string[2],3)
@@ -228,7 +228,7 @@ class lcd:
 
    #just works for 1 "\n" to work with more uncomment the following lines
    def lcd_put_new_line_center(self,string):
-      string = string.split()
+      string = string.split('\n')
       self.print_on_center(string[0],1)
       self.print_on_center(string[1],2)
       #self.print_on_center(string[2],3)
