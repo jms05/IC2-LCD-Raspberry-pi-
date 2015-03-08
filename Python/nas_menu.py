@@ -40,9 +40,6 @@ def getRAMinfo():
                 ramtot = float(line[0])
                 ramused = float(line[1])
                 ramfree = float(line[2])
-                print ramtot
-                print ramused
-                print ramfree
                 ##GB
                 if ramtot >= (1024 * 1024):
                     ramtot = ramtot / (1024*1024)
