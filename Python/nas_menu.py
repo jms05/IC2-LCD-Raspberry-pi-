@@ -335,9 +335,9 @@ def loop():
         sleep(3)
         mylcd.lcd_clear()
         ##RAM
-        totRam = "Tot RAM:" + ramtot + "MB"
-        useRam = "Used RAM:" + ramUsed + "MB"
-        freeRam = "Free RAM:" + ramFree + "MB"
+        totRam = "Tot RAM:" + ramtot
+        useRam = "Used RAM:" + ramUsed
+        freeRam = "Free RAM:" + ramFree
         mylcd.lcd_put_new_line_center(totRam + "\n" + useRam)
         sleep(3)
         mylcd.lcd_clear()
