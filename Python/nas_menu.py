@@ -1,4 +1,12 @@
-# requires RPi_I2C_driver.py
+# requires RPi_I2C_driver.py on the same folder
+
+# -*- coding: utf-8 -*-
+
+#Compiled, mashed and generally mutilated 2014-2015 by Joao Silva
+#Made available under GNU GENERAL PUBLIC LICENSE
+#By JMS (Joao Silva)
+#08-03-2015
+
 import RPi_I2C_driver
 from time import *
 import psutil
@@ -10,8 +18,7 @@ import string
 from datetime import timedelta
 mylcd = RPi_I2C_driver.lcd()
 
-# test 2
-mylcd.lcd_put_new_line_center("JMS.SLYIP.COM\nDONE")
+mylcd.lcd_put_new_line_center("YOUR BOOT\nMESSAGE")
 
 sleep(2) # 2 sec delay
 
@@ -30,12 +37,110 @@ def getRAMinfo():
         line = p.readline()
         if i==2:
                 line = (line.split()[1:4])
-                ramtot = line[0]
-                ramused = line[1]
-                ramfree = line [2]
-                ramtot = str(float(ramtot) / 1024)[0:3]      
-                ramused = str(float(ramused) / 1024)[0:3]      
-                ramfree = str(float(ramfree) / 1024)[0:3]  
+                ramtot = float(line[0])
+                ramused = float(line[1])
+                ramfree = float(line[2])
+                print ramtot
+                print ramused
+                print ramfree
+                ##GB
+                if ramtot >= (1024 * 1024):
+                    ramtot = ramtot / (1024*1024)
+                    if ramtot < 10:
+                        ramtot = str(ramtot)[0:1]
+                    else:
+                         if ramtot < 100:
+                            ramtot = str(ramtot)[0:2]
+                         else:
+                            ramtot = str(ramtot)[0:3]
+                    ramtot = ramtot + "GB"
+
+                if ramused >= (1024 * 1024):
+                    ramused = ramused / (1024*1024)
+                    if ramused < 10:
+                        ramused = str(ramused)[0:1]
+                    else:
+                         if ramused < 100:
+                            ramused = str(ramused)[0:2]
+                         else:
+                            ramused = str(ramused)[0:3]
+                    ramused = ramused + "GB"
+
+                if ramfree >= (1024 * 1024):
+                    ramfree = ramfree / (1024*1024)
+                    if ramfree < 10:
+                        ramfree = str(ramfree)[0:1]
+                    else:
+                         if ramfree < 100:
+                            ramfree = str(ramfree)[0:2]
+                         else:
+                            ramfree = str(ramfree)[0:3]
+                    ramfree = ramfree + "GB"
+
+                ##MB
+                if ramtot >= 1024 and ramtot < (1024*1024):
+                    ramtot = ramtot / (1024)
+                    if ramtot < 10:
+                        ramtot = str(ramtot)[0:1]
+                    else:
+                         if ramtot < 100:
+                            ramtot = str(ramtot)[0:2]
+                         else:
+                            ramtot = str(ramtot)[0:3]
+                    ramtot = ramtot + "MB"
+
+                if ramused >= 1024 and ramused < (1024*1024):
+                    ramused = ramused / (1024)
+                    if ramused < 10:
+                        ramused = str(ramused)[0:1]
+                    else:
+                         if ramused < 100:
+                            ramused = str(ramused)[0:2]
+                         else:
+                            ramused = str(ramused)[0:3]
+                    ramused = ramused + "MB"
+
+                if ramfree >= 1024 and ramfree < (1024*1024):
+                    ramfree = ramfree / (1024)
+                    if ramfree < 10:
+                        ramfree = str(ramfree)[0:1]
+                    else:
+                         if ramfree < 100:
+                            ramfree = str(ramfree)[0:2]
+                         else:
+                            ramfree = str(ramfree)[0:3]
+                    ramfree = ramfree + "MB"
+                     ##KB
+                if ramtot <1024:
+                    if ramtot < 10:
+                        ramtot = str(ramtot)[0:1]
+                    else:
+                         if ramtot < 100:
+                            ramtot = str(ramtot)[0:2]
+                         else:
+                            ramtot = str(ramtot)[0:3]
+                    ramtot = ramtot + "KB"
+
+                if ramused < 1024:
+                    if ramused < 10:
+                        ramused = str(ramused)[0:1]
+                    else:
+                         if ramused < 100:
+                            ramused = str(ramused)[0:2]
+                         else:
+                            ramused = str(ramused)[0:3]
+                    ramused = ramused + "KB"
+
+                if ramfree < 1024:
+                    if ramfree < 10:
+                        ramfree = str(ramfree)[0:1]
+                    else:
+                         if ramfree < 100:
+                            ramfree = str(ramfree)[0:2]
+                         else:
+                            ramfree = str(ramfree)[0:3]
+                    ramfree = ramfree + "KB"
+
                 return (ramtot + " " + ramused + " " + ramfree)
 
 # Return % of CPU used by user as a character string                                
@@ -144,7 +249,7 @@ def getDeviceinfo(deviceL):
 
 
 
-def dotstonewLine(old):
+def dotstoSpace(old):
     ret = string.replace(old,':',' ')
     return ret
 
@@ -152,10 +257,10 @@ def getTime():
     p=os.popen("date")
     date = p.readline() 
     elem = date.split()
-    return (dotstonewLine(elem[3])) 
+    return (dotstoSpace(elem[3])) 
 
 
-def wakeTime(stH,stM,endH,endM):
+def wakeTime(stH,stM,endH,endM,minLoop):
     on = 1
     stime = (stH * 60) + stM
     entime = (endH * 60) + endM
@@ -164,15 +269,22 @@ def wakeTime(stH,stM,endH,endM):
         acTime = getTime().split()
         hora = int(acTime[0])
         minu = int(acTime[1])
-    sec = int(acTime[2])
-    horatest = (hora * 60) +  minu
+        sec = int(acTime[2])
+        horatest = (hora * 60) +  minu
+        sectime = (horatest * 60) + sec  
         if horatest >= stime and horatest <= entime: ## Lcd ligado esre tempo
             on = 1
-        mylcd.backlight(1)
+            mylcd.backlight(1)
             loop()
         else: 
-        if (on == 1):
-        on = 0
+            if ( minLoop > 0 and sectime % (minLoop * 60) == 0):
+                if (on == 0):
+                    on = 1
+                    mylcd.lcd_clear()
+                    mylcd.backlight(1)
+                loop()
+            else (on == 1):
+                on = 0
                 mylcd.lcd_clear()
                 mylcd.backlight(0)        
 
@@ -181,41 +293,40 @@ def loop():
     i=0
     while i<1:
         i = i+1
-    #obter Dados
-        ##Informacao relativa ao CPU
+    #Get data
+        ##CPU
         cpuTaux = getCPUtemperature()
         cpuUsa = getCPUuse()
         cpuFreq = get_cpu_speed()
-        ##Informaao relativa a ram
-        ram = getRAMinfo()
-        ram = ram.split()
+        ##RAM
+        ram = getRAMinfo().split()
         ramtot = ram[0]
         ramUsed = ram[1]
         ramFree = ram[2]
-        ##info relativa ao disco
+        ##LOCAL HDD
         disco= getDiskSpace()
         diskTot = disco[0]
         diskUsed = disco[1]
         diskFree = disco[2]
         diskPerUse = disco[3]   
-        ##info relativa ao IP
+        ##IP
         etho = get_ip_address('eth0')
-        ##info relativa ao disco externo
+        ##EXTERNAL HDD
         hddsize = getDeviceinfo(12)[0]
         hdduse = getDeviceinfo(12)[1]
         hddava = getDeviceinfo(12)[2]
         hddpused = getDeviceinfo(12)[3]
-        ##info relativa Torrents
+        ##NETWORK DRIVE_TORRENTS
         torsize = getDeviceinfo(9)[0]
         toruse = getDeviceinfo(9)[1]
         torava = getDeviceinfo(9)[2]
         torpused = getDeviceinfo(9)[3]
-        ##info relativa Multimedia
+        ##NETWORK DRIVE_MULTIMEDIA
         multsize = getDeviceinfo(10)[0]
         multuse = getDeviceinfo(10)[1]
         multava = getDeviceinfo(10)[2]
         multpused = getDeviceinfo(10)[3]        
-    #Imprimir dados
+    #PRINT DATA
         ##CPU
         cpuTemp = "CPU TEMP:" + cpuTaux[-4:] + "'C"
         cpuUsage = "CPU USE:" + cpuUsa + "%"
@@ -236,7 +347,7 @@ def loop():
         mylcd.lcd_put_new_line_center(useRam + "\n" + freeRam)
         sleep(3)
         mylcd.lcd_clear()
-        ##Disco
+        ##LOCAL HD
         usedHDD = "Used HDD:" + diskUsed + "B"
         freeHDD = "Free HDD:" + diskFree + "B"
         precHDD = "HDD Used:" + diskPerUse
@@ -246,7 +357,7 @@ def loop():
         mylcd.lcd_put_new_line_center(freeHDD + "\n" + precHDD)
         sleep(3)
         mylcd.lcd_clear()
-        ##USBHDD
+        ##EXTERNAL HDD
         usedUSB = "Used USB:" + hdduse
         freeUSB = "Free USB:" + hddava
         precUSB = "HDD Used:" + hddpused
@@ -256,7 +367,7 @@ def loop():
         mylcd.lcd_put_new_line_center(freeUSB + "\n" + precUSB)
         sleep(3)
         mylcd.lcd_clear()
-        ##Torrents
+        ##NETWORK DRIVE_TORRENTS
         usedTOR = "Used TOR.:" + toruse
         freeTOR = "Free TOR.:" + torava
         precTOR = "TOR. Used:" + torpused
@@ -266,7 +377,7 @@ def loop():
         mylcd.lcd_put_new_line_center(freeTOR + "\n" + precTOR)
         sleep(3)
         mylcd.lcd_clear()
-        ##Multimedia
+        ##NETWORK DRIVE_MULTIMEDIA
         usedMUL = "Used MUL:" + multuse
         freeMUL = "Free MUL:" + multava
         precMUL = "MUL Used:" + multpused
@@ -284,4 +395,4 @@ def loop():
         mylcd.lcd_clear()
 
 
-wakeTime(8,30,17,18) 
+wakeTime(8,30,23,59,10) #start hour, start minute, end hour, end minute, interval to show on sleep mode 0 to not show

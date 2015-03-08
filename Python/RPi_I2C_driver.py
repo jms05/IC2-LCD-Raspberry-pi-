@@ -10,11 +10,8 @@
 # original souce downloaded from Denis Pleic on 2015-02-2015
 # By JMS (Joao Silva)
 # added function to print on lcd to diferent ways
-# 07-03-2015
+# 08-03-2015
 
-#"""
-#
-#
 import smbus
 from time import *
  
